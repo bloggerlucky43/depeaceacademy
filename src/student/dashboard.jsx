@@ -85,7 +85,7 @@ const Dashboard = () => {
                 </li>
                 <li className="nav-item mb-2">
                   <Link to="/student/results" className="nav-link text-nav">
-                    Result
+                    View Result
                   </Link>
                 </li>
                 <li className="nav-item mb-2">

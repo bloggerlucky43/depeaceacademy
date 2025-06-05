@@ -50,7 +50,7 @@ const Sidebar = () => {
           </Link>{" "}
         </li>
         <li className="nav-item mb-2">
-          <Link to="/student/fees" className="nav-link text-white">
+          <Link to="/student/receipt" className="nav-link text-white">
             Fee & Receipt
           </Link>{" "}
         </li>

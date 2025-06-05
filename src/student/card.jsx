@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Card = () => {
   return (
     <div className="container">
@@ -10,9 +12,9 @@ const Card = () => {
               alt="Card image cap"
             />
             <div className="card-body">
-              <a href="/student/profile" className="btn btn-primary">
+              <Link to="/student/profile" className="btn btn-primary">
                 Profile
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -25,9 +27,9 @@ const Card = () => {
               alt="Card image cap"
             />
             <div className="card-body">
-              <a href="/student/results" className="btn btn-primary">
+              <Link href="/student/results" className="btn btn-primary">
                 Check Result
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -40,9 +42,9 @@ const Card = () => {
               alt="Card image cap"
             />
             <div className="card-body">
-              <a href="/student/receipt" className="btn btn-primary">
+              <Link to="/student/receipt" className="btn btn-primary">
                 View Receipt
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -55,9 +57,9 @@ const Card = () => {
               alt="Card image cap"
             />
             <div className="card-body">
-              <a href="/student/payment" className="btn btn-primary">
+              <Link to="/student/payment" className="btn btn-primary">
                 Pay School Fees
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -69,11 +71,6 @@ const Card = () => {
               src="/3d-design_9390515.png"
               alt="Card image cap"
             />
-            <div className="card-body">
-              <a href="#" className="btn btn-primary">
-                Check Test Result
-              </a>
-            </div>
           </div>
         </div>
       </div>
