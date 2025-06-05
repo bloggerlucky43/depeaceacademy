@@ -138,11 +138,6 @@ const AddNewTeacher = () => {
                 <p>{new Date().toDateString()}</p>
               </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="btn btn-outline-danger me-xl-5">
-              Log out
-            </button>
           </div>
 
           {sidebarVisible && (
@@ -176,6 +171,11 @@ const AddNewTeacher = () => {
                     className="nav-link text-nav">
                     Payment History
                   </Link>
+                </li>
+                <li className="nav-item mb-2">
+                  <button onClick={handleLogout} className="sm-logout-btn">
+                    Logout
+                  </button>
                 </li>
               </ul>
             </div>

@@ -31,6 +31,7 @@ const Landing = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="*" element={<Navigate to="/login" />} />
 
           {/* Teacher Only */}
 
