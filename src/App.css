@@ -118,7 +118,7 @@
   border: none !important;
 }
 .custom-back {
-  background-image: url("./paper-sheet-pens.jpg");
+  background-image: url("/paper-sheet-pens.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   min-height: 100vh;
