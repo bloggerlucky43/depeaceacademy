@@ -207,7 +207,9 @@ const AdminDashboard = () => {
                     </Link>
                   </div>
                   <div className="col-md-3">
-                    <Link to="/admin" className="btn btn-outline-danger w-100">
+                    <Link
+                      to="/admin/academics/receipts"
+                      className="btn btn-outline-danger w-100">
                       Generate Receipt
                     </Link>
                   </div>

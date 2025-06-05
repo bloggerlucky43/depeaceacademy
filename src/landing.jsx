@@ -1,7 +1,12 @@
 import Login from "./component/login";
 import Dashboard from "./student/dashboard";
 import Profile from "./student/profile";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { AuthProvider } from "./AuthProvider";
 import Fees from "./student/fees";
 import Results from "./student/Result";
