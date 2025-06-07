@@ -26,29 +26,27 @@ export const AuthProvider = ({ children }) => {
           setUser(data.user);
         } else {
           setUser(null);
-          if (!publicRoutes.some((route) => location.pathname.startsWith(route))) {
-            navigate("/login");
-          }
         }
       } catch (error) {
         setUser(null);
-        if (!publicRoutes.some((route) => location.pathname.startsWith(route))) {
-          navigate("/login");
-        }
       } finally {
         setLoading(false);
       }
     };
 
     verifySession();
-  }, [navigate, location.pathname]);
+  }, []);
 
   useEffect(() => {
-  if (!loading && !user && !publicRoutes.some(route => location.pathname.startsWith(route))) {
-    navigate("/login");
-  }
-}, [loading, user, location.pathname, navigate]);
-  
+    if (
+      !loading &&
+      !user &&
+      !publicRoutes.some((route) => location.pathname.startsWith(route))
+    ) {
+      navigate("/login");
+    }
+  }, [loading, user, location.pathname, navigate]);
+
   return (
     <AuthContext.Provider value={{ user, setUser, loading }}>
       {children}
