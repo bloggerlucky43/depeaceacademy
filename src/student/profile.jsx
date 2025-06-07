@@ -119,7 +119,7 @@ const Profile = () => {
               <div className="card-body">
                 <div className="row g-4">
                   {/* <Student Image */}
-                  <div className="col-md-4 text-center">
+                  {/* <div className="col-md-4 text-center">
                     <img
                       src="/myprofile.jpg"
                       alt="Student Passport"
@@ -130,7 +130,7 @@ const Profile = () => {
                       }}
                       className="img-fluid rounded-circle border border-2"
                     />
-                  </div>
+                  </div> */}
 
                   {/* Profile Table  */}
                   <div className="col-md-8">
