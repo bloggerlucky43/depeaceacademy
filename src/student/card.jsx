@@ -27,7 +27,7 @@ const Card = () => {
               alt="Card image cap"
             />
             <div className="card-body">
-              <Link href="/student/results" className="btn btn-primary">
+              <Link to="/student/results" className="btn btn-primary">
                 Check Result
               </Link>
             </div>
@@ -61,16 +61,6 @@ const Card = () => {
                 Pay School Fees
               </Link>
             </div>
-          </div>
-        </div>
-
-        <div className="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
-          <div className="card custom-card mb-3 ">
-            <img
-              className="card-img-top w-50 mt-5 align-self-center"
-              src="/3d-design_9390515.png"
-              alt="Card image cap"
-            />
           </div>
         </div>
       </div>
