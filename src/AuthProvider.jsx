@@ -43,6 +43,12 @@ export const AuthProvider = ({ children }) => {
     verifySession();
   }, [navigate, location.pathname]);
 
+  useEffect(() => {
+  if (!loading && !user && !publicRoutes.some(route => location.pathname.startsWith(route))) {
+    navigate("/login");
+  }
+}, [loading, user, location.pathname, navigate]);
+  
   return (
     <AuthContext.Provider value={{ user, setUser, loading }}>
       {children}
