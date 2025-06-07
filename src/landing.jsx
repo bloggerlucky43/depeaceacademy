@@ -30,9 +30,9 @@ import PendingResult from "./admin/academics/pendingResult";
 import GenerateReceipt from "./admin/academics/generateReceipt";
 
 const AppRoutes = () => {
-  const { loading } = useContext(AuthContext);
+  const { pageloading } = useContext(AuthContext);
 
-  if (loading) {
+  if (pageloading) {
     return (
       <div
         className="d-flex justify-content-center align-items-center"
