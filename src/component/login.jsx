@@ -1,11 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { AuthContext } from "../AuthProvider"; // Adjust the path if needed
 
 const bApp = import.meta.env.VITE_API_URL;
+console.log(bApp);
 
 const Login = () => {
-  const { setUser } = useContext(AuthContext); // get setUser from context
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -24,7 +23,7 @@ const Login = () => {
     try {
       const res = await fetch(`${bApp}/api/auth/login`, {
         method: "POST",
-        credentials: "include",
+        credentials: "include", // Include cookies in request
         headers: {
           "Content-Type": "application/json",
         },
@@ -32,11 +31,13 @@ const Login = () => {
       });
 
       const data = await res.json();
+      const userInfo = data.user;
+
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
 
       if (res.ok) {
-        setUser(data.user); // Update user in context (which also updates localStorage)
         setMessage("Login successful!");
-
+        // Redirect or update app state
         if (data.user.role === "student") {
           navigate("/student/dashboard");
         } else if (data.user.role === "teacher") {
@@ -44,6 +45,7 @@ const Login = () => {
         } else {
           navigate("/admin_dashboard");
         }
+        console.log("Logged in user:", data.user);
       } else {
         setMessage(data.message || "Login failed");
       }
