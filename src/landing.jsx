@@ -1,4 +1,4 @@
-import { useContext } from "react";
+        import { useContext } from "react";
 import { AuthProvider, AuthContext } from "./AuthProvider";
 import {
   BrowserRouter as Router,
@@ -30,9 +30,9 @@ import PendingResult from "./admin/academics/pendingResult";
 import GenerateReceipt from "./admin/academics/generateReceipt";
 
 const AppRoutes = () => {
-  const { pageloading } = useContext(AuthContext);
+  const { loading } = useContext(AuthContext);
 
-  if (pageloading) {
+  if (loading) {
     return (
       <div
         className="d-flex justify-content-center align-items-center"
@@ -192,7 +192,6 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
