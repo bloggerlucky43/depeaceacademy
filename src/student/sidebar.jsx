@@ -32,6 +32,7 @@ const Sidebar = () => {
         src="/DE.png"
         alt="schoollogo"
         className="rounded mx-auto d-block custom-logo"
+        loading="lazy"
       />
       <ul className="nav flex-column text-center mt-5 ">
         <li className="nav-item  mb-2">
