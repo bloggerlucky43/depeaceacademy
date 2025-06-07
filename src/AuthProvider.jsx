@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { createContext, useState } from "react";
+import { useEffect, createContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const bApp = import.meta.env.VITE_API_URL;
@@ -7,17 +6,19 @@ const bApp = import.meta.env.VITE_API_URL;
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // store user details here
-  const [loading, setLoading] = useState(true); // Loading state while we check cookie
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const publicRoutes = ["/login", "/forgot-password", "/reset-password"];
 
   useEffect(() => {
     const verifySession = async () => {
       try {
         const res = await fetch(`${bApp}/api/auth/verify`, {
           method: "GET",
-          credentials: "include", // send cookies with request
+          credentials: "include",
         });
 
         if (res.ok) {
@@ -25,20 +26,13 @@ export const AuthProvider = ({ children }) => {
           setUser(data.user);
         } else {
           setUser(null);
-          // ✅ Only redirect if user is on a protected route
-          const publicRoutes = [
-            "/login",
-            "/forgot-password",
-            "/reset-password",
-          ];
-          if (!publicRoutes.includes(location.pathname)) {
+          if (!publicRoutes.some((route) => location.pathname.startsWith(route))) {
             navigate("/login");
           }
         }
       } catch (error) {
         setUser(null);
-        const publicRoutes = ["/login", "/forgot-password", "/reset-password"];
-        if (!publicRoutes.includes(location.pathname)) {
+        if (!publicRoutes.some((route) => location.pathname.startsWith(route))) {
           navigate("/login");
         }
       } finally {
