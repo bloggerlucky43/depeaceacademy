@@ -49,7 +49,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgetPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="*" element={<Navigate to="/login" />} />
+      
 
       {/* Teacher Routes */}
       <Route
@@ -192,6 +192,8 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+      <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
   );
 };
