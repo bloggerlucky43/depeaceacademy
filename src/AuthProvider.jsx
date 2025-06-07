@@ -6,7 +6,11 @@ const bApp = import.meta.env.VITE_API_URL;
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    // Initialize user from localStorage if available
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const [pageloading, setPageLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,20 +28,28 @@ export const AuthProvider = ({ children }) => {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user);
+          localStorage.setItem("user", JSON.stringify(data.user));  // persist user
         } else {
           setUser(null);
+          localStorage.removeItem("user");
         }
       } catch (error) {
         setUser(null);
+        localStorage.removeItem("user");
       } finally {
         setPageLoading(false);
       }
     };
 
-    verifySession();
-  }, []); // <-- Run once on mount ONLY
+    if (!user) {
+      // Only verify if no user in localStorage
+      verifySession();
+    } else {
+      // We already have a user from localStorage, so loading done
+      setPageLoading(false);
+    }
+  }, []);
 
-  // Redirect to login only if not loading, no user, and not on a public route
   useEffect(() => {
     if (
       !pageloading &&
@@ -47,6 +59,15 @@ export const AuthProvider = ({ children }) => {
       navigate("/login", { replace: true });
     }
   }, [pageloading, user, location.pathname, navigate]);
+
+  // Save user to localStorage when user state changes (login/logout)
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, pageloading }}>
