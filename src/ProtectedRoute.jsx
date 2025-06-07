@@ -3,10 +3,10 @@ import { AuthContext } from "./AuthProvider";
 import { useContext } from "react";
 
 const ProtectedRoute = ({ allowedRoles, children }) => {
-  const { user, loading } = useContext(AuthContext);
+  const { user, pageloading } = useContext(AuthContext);
 
   // Wait for loading to complete before rendering anything
-  if (loading) {
+  if (pageloading) {
     return (
       <div
         className="d-flex justify-content-center align-items-center"
