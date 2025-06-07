@@ -7,7 +7,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [pageloading, setPageLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         setUser(null);
       } finally {
-        setLoading(false);
+        setPageLoading(false);
       }
     };
 
@@ -40,13 +40,13 @@ export const AuthProvider = ({ children }) => {
   // Redirect to login only if not loading, no user, and not on a public route
   useEffect(() => {
     if (
-      !loading &&
+      !pageloading &&
       !user &&
       !publicRoutes.some((route) => location.pathname.startsWith(route))
     ) {
       navigate("/login", { replace: true });
     }
-  }, [loading, user, location.pathname, navigate]);
+  }, [pageloading, user, location.pathname, navigate]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading }}>
