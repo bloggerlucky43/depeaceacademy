@@ -35,15 +35,16 @@ export const AuthProvider = ({ children }) => {
     };
 
     verifySession();
-  }, []);
+  }, []); // <-- Run once on mount ONLY
 
+  // Redirect to login only if not loading, no user, and not on a public route
   useEffect(() => {
     if (
       !loading &&
       !user &&
       !publicRoutes.some((route) => location.pathname.startsWith(route))
     ) {
-      navigate("/login");
+      navigate("/login", { replace: true });
     }
   }, [loading, user, location.pathname, navigate]);
 
