@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import TeacherSidebar from "./sidebar";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { AuthContext } from "../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 console.log(bApp);
 
 const TeacherDashboard = () => {
   // State to toggle sidebar visibility
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [stats, setStats] = useState({
     approved_count: 0,
@@ -20,12 +22,15 @@ const TeacherDashboard = () => {
     setSidebarVisible(!sidebarVisible); // Toggle sidebar visibility
   };
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const teacherId = userInfo?.id;
-  const term = userInfo?.term;
-  const session = userInfo?.session;
+  const teacherId = user.id;
+  const term = user.term;
+  const session = user.session;
 
   useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+
     const fetchData = async () => {
       try {
         const response = await fetch(
@@ -48,7 +53,7 @@ const TeacherDashboard = () => {
     };
 
     fetchData();
-  }, []);
+  }, [navigate, user]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -69,6 +74,7 @@ const TeacherDashboard = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -81,7 +87,17 @@ const TeacherDashboard = () => {
     }
   };
 
-  const userName = userInfo?.name;
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  const userName = user.name;
 
   return (
     <>

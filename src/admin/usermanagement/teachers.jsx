@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AdminSideBar from "../adminsidebar";
 import { useEffect } from "react";
+import { AuthContext } from "../../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 const TeacherManage = () => {
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -15,8 +17,8 @@ const TeacherManage = () => {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const navigate = useNavigate();
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const adminId = userInfo?.id;
+
+  const adminId = user.id;
 
   const handleSideBar = (e) => {
     e.preventDefault();
@@ -36,7 +38,7 @@ const TeacherManage = () => {
         );
 
         const data = await response.json();
-        console.log("the response from backend is:", data);
+        // console.log("the response from backend is:", data);
 
         if (!response.ok) {
           setError("No record found");
@@ -123,6 +125,7 @@ const TeacherManage = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -134,6 +137,16 @@ const TeacherManage = () => {
       alert("An error occurred during logout");
     }
   };
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
 
   return (
     <>
@@ -155,7 +168,7 @@ const TeacherManage = () => {
                 )}
               </button>
               <div className="d-flex flex-column ">
-                <h3 className="m-0">Welcome {userInfo?.name}</h3>
+                <h3 className="m-0">Welcome {user.name}</h3>
                 <p>{new Date().toDateString()}</p>
               </div>
             </div>

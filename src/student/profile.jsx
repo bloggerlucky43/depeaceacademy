@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Sidebar from "./sidebar";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 const Profile = () => {
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -23,6 +25,7 @@ const Profile = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -35,19 +38,26 @@ const Profile = () => {
     }
   };
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  console.log(userInfo);
-  const userClass = userInfo?.class;
-  // const term=userInfo?.term;
-  const identityNumber = userInfo?.identitynumber;
-  // const currentSession=userInfo?.session;
-  const userName = userInfo?.name;
-  const userGender = userInfo?.gender;
-  const dateOfBirth = userInfo?.dateofbirth;
-  const guardiancontact = userInfo?.contact;
-  const contactAddress = userInfo?.address;
-  const userEmail = userInfo?.email;
-
+  const userClass = user.class;
+  // const term=user.term;
+  const identityNumber = user.identitynumber;
+  // const currentSession=user.session;
+  const userName = user.name;
+  const userGender = user.gender;
+  const dateOfBirth = user.dateofbirth;
+  const guardiancontact = user.contact;
+  const contactAddress = user.address;
+  const userEmail = user.email;
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   return (
     <>
       <div className="d-flex topdiv vh-100">

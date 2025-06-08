@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AdminSideBar from "../adminsidebar";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 const AddNewTeacher = () => {
   // State to toggle sidebar visibility
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -34,8 +36,7 @@ const AddNewTeacher = () => {
     setSidebarVisible(!sidebarVisible); // Toggle sidebar visibility
   };
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const userName = userInfo?.name;
+  const userName = user.name;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,7 +78,7 @@ const AddNewTeacher = () => {
       });
 
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
 
       if (response.ok) {
         alert(data.message);
@@ -90,7 +91,6 @@ const AddNewTeacher = () => {
       setLoading(false);
     }
   };
-
   const handleLogout = async (e) => {
     e.preventDefault();
 
@@ -102,6 +102,7 @@ const AddNewTeacher = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -113,6 +114,17 @@ const AddNewTeacher = () => {
       alert("An error occurred during logout");
     }
   };
+
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
 
   return (
     <>

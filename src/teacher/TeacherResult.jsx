@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import TeacherSidebar from "./sidebar";
+import { AuthContext } from "../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 const TeacherResult = () => {
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [students, setStudents] = useState([]);
   const [selectedClass, setSelectedClass] = useState("SS1");
@@ -33,7 +35,7 @@ const TeacherResult = () => {
       if (!response.ok) throw new Error("Failed to fetch students");
 
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       const studentData = data.result.map((student) => ({
         ...student,
         test: "",
@@ -78,9 +80,8 @@ const TeacherResult = () => {
   };
 
   //Dont forget to include teacher id
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const teacherId = userInfo?.id;
-  console.log("The teacher id is", teacherId);
+  const teacherId = user.id;
+  // console.log("The teacher id is", teacherId);
 
   const handleSaveResults = async (e) => {
     e.preventDefault();
@@ -139,6 +140,7 @@ const TeacherResult = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -151,6 +153,16 @@ const TeacherResult = () => {
     }
   };
 
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   return (
     <>
       <div className="d-flex topdiv vh-100">
@@ -170,7 +182,7 @@ const TeacherResult = () => {
                 )}
               </button>
               <div className="d-flex flex-column ">
-                <h3 className="m-0">Welcome {userInfo?.name}</h3>
+                <h3 className="m-0">Welcome {user.name}</h3>
                 <p>{new Date().toDateString()}</p>
               </div>
             </div>

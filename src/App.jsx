@@ -1,13 +1,13 @@
-import './App.css'
-import Landing from './landing'
-function App() {
-  
+import "./App.css";
+import Landing from "./landing";
+import { AuthProvider } from "./AuthProvider";
 
+function App() {
   return (
-    <>
-    <Landing />
-    </>
-  )
+    <AuthProvider>
+      <Landing />
+    </AuthProvider>
+  );
 }
 
-export default App
+export default App;

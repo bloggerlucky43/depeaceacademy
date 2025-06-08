@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./sidebar";
+import { AuthContext } from "../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 
 const Fees = () => {
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [receipts, setReceipts] = useState([]);
@@ -29,6 +31,7 @@ const Fees = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -41,8 +44,18 @@ const Fees = () => {
     }
   };
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const userId = userInfo?.id;
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+
+  const userId = user.id;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,7 +117,7 @@ const Fees = () => {
               )}
             </button>
             <div>
-              <h3 className="m-0">Welcome {userInfo?.name}</h3>
+              <h3 className="m-0">Welcome {user.name}</h3>
               <p>{new Date().toDateString()}</p>
             </div>
           </div>
@@ -151,7 +164,9 @@ const Fees = () => {
         <div className="container my-4">
           <div className="card shadow bg-shadow">
             <div className="card-header bg-card text-white">
-              <h4 className="mb-0">Payment & Receipt - 2nd Term, 2024/2025</h4>
+              <h4 className="mb-0">
+                Payment & Receipt - {user.term}, {user.session}
+              </h4>
             </div>
             <div className="card-body">
               {/* Fee Summary */}

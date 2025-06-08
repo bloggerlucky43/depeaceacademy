@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AdminSideBar from "../adminsidebar";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 const AddNewStudent = () => {
   // State to toggle sidebar visibility
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedClass, setSelectedClass] = useState("JSS1");
@@ -36,8 +38,7 @@ const AddNewStudent = () => {
     setSidebarVisible(!sidebarVisible); // Toggle sidebar visibility
   };
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const userName = userInfo?.name;
+  const userName = user.name;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -81,7 +82,7 @@ const AddNewStudent = () => {
       });
 
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
 
       if (response.ok) {
         alert(data.message);
@@ -106,6 +107,7 @@ const AddNewStudent = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -117,6 +119,16 @@ const AddNewStudent = () => {
       alert("An error occurred during logout");
     }
   };
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
 
   return (
     <>

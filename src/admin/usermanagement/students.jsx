@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AdminSideBar from "../adminsidebar";
+import { AuthContext } from "../../AuthProvider";
 const bApp = import.meta.env.VITE_API_URL;
 function ListofStudent() {
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [students, setStudents] = useState([]);
   const [selectedClass, setSelectedClass] = useState("JSS1");
@@ -23,11 +25,10 @@ function ListofStudent() {
     setSelectedClass(e.target.value);
   };
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const adminId = userInfo?.id;
-  const term = userInfo?.term;
-  const session = userInfo?.session;
-  const userName = userInfo?.name;
+  const adminId = user.id;
+  const term = user.term;
+  const session = user.session;
+  const userName = user.name;
 
   const HandleStudentLoading = async (e) => {
     e.preventDefault();
@@ -44,7 +45,7 @@ function ListofStudent() {
       if (!response.ok) throw new Error("Failed to fetch students");
 
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       setStudents(data.results);
     } catch (error) {
       alert(error.message);
@@ -83,7 +84,7 @@ function ListofStudent() {
         body: JSON.stringify(updatedStudent),
       });
 
-      console.log(updatedStudent);
+      // console.log(updatedStudent);
 
       if (updateData.ok) {
         alert("Saved changes successfully");
@@ -119,7 +120,6 @@ function ListofStudent() {
       }
     }
   };
-
   const handleLogout = async (e) => {
     e.preventDefault();
 
@@ -131,6 +131,7 @@ function ListofStudent() {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -142,6 +143,17 @@ function ListofStudent() {
       alert("An error occurred during logout");
     }
   };
+
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
 
   return (
     <>

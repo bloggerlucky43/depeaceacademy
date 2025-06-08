@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AdminSideBar from "../adminsidebar";
+import { AuthContext } from "../../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 const PendingResult = () => {
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [students, setStudents] = useState([]);
   const [selectedClass, setSelectedClass] = useState("SS1");
@@ -38,12 +40,12 @@ const PendingResult = () => {
       if (!response.ok) throw new Error("Failed to fetch students");
 
       const data = await response.json();
-      console.log("Data from the backend:", data);
+      // console.log("Data from the backend:", data);
 
       const studentData = data.map((student) => ({
         ...student,
       }));
-      console.log("Student data", studentData);
+      // console.log("Student data", studentData);
 
       setStudents(studentData); // assuming backend sends { students: [...] }
       setLoading(false);
@@ -83,7 +85,7 @@ const PendingResult = () => {
     e.preventDefault();
     const student = students[index];
     const studentId = student.id;
-    console.log("Student log", student);
+    // console.log("Student log", student);
 
     setLoadingApproval(true);
 
@@ -98,13 +100,13 @@ const PendingResult = () => {
           selectedClass: selectedClass.trim(),
           selectedSubject: selectedSubject.trim(),
           studentId,
-          currentsession: userInfo.session.trim(),
-          currentTerm: userInfo.term.trim(),
+          currentsession: user.session.trim(),
+          currentTerm: user.term.trim(),
         }),
       });
 
       const data = await response.json();
-      console.log("The response from backend");
+      // console.log("The response from backend");
 
       if (response.ok) {
         setStudents(data);
@@ -124,7 +126,7 @@ const PendingResult = () => {
     e.preventDefault();
     const student = students[index];
     const studentId = student.id;
-    console.log(studentId);
+    // console.log(studentId);
 
     setDeleteLoading(true);
 
@@ -152,7 +154,7 @@ const PendingResult = () => {
     }
   };
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
   const handleSaveResults = async (e, index) => {
     e.preventDefault();
@@ -167,8 +169,8 @@ const PendingResult = () => {
       exam_score: student.exam_score,
       grade: student.grade,
       comment: student.comment,
-      term: userInfo?.term,
-      session: userInfo?.session,
+      term: user.term,
+      session: user.session,
       totalscore: student.totalscore,
     };
 
@@ -187,7 +189,7 @@ const PendingResult = () => {
       });
 
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
 
       if (response.ok) {
         alert("Results saved successfully!");
@@ -213,6 +215,7 @@ const PendingResult = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -224,6 +227,17 @@ const PendingResult = () => {
       alert("An error occurred during logout");
     }
   };
+
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
 
   return (
     <>
@@ -244,7 +258,7 @@ const PendingResult = () => {
                 )}
               </button>
               <div className="d-flex flex-column ">
-                <h3 className="m-0">Welcome {userInfo?.name}</h3>
+                <h3 className="m-0">Welcome {user.name}</h3>
                 <p>{new Date().toDateString()}</p>
               </div>
             </div>

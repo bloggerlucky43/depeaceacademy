@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AdminSideBar from "../adminsidebar";
+import { AuthContext } from "../../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 const GenerateReceipt = () => {
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [receipts, setReceipts] = useState([]);
   const [error, setError] = useState("");
@@ -22,8 +24,7 @@ const GenerateReceipt = () => {
   const handleSessionChange = (e) => setSelectedSession(e.target.value);
   const handleTermChange = (e) => setSelectedTerm(e.target.value);
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const adminId = userInfo?.id;
+  const adminId = user.id;
 
   const fetchReceipt = async (e) => {
     e.preventDefault();
@@ -39,7 +40,7 @@ const GenerateReceipt = () => {
       );
 
       const data = await fetchData.json();
-      console.log("The data from backend:", data);
+      // console.log("The data from backend:", data);
 
       if (!fetchData.ok) {
         setError("No record found ");
@@ -73,7 +74,7 @@ const GenerateReceipt = () => {
         setError("No record found for this ID");
       }
       const data = await response.json();
-      console.log("The response from backend", data);
+      // console.log("The response from backend", data);
       setReceipts(data || []);
     } catch (error) {
       console.error("Search failed", error);
@@ -81,7 +82,6 @@ const GenerateReceipt = () => {
       setSearchLoading(false);
     }
   };
-
   const handleLogout = async (e) => {
     e.preventDefault();
 
@@ -93,6 +93,7 @@ const GenerateReceipt = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -104,6 +105,17 @@ const GenerateReceipt = () => {
       alert("An error occurred during logout");
     }
   };
+
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
 
   return (
     <>
@@ -123,7 +135,7 @@ const GenerateReceipt = () => {
                 )}
               </button>
               <div className="d-flex flex-column ">
-                <h3 className="m-0">Welcome {userInfo?.name}</h3>
+                <h3 className="m-0">Welcome {user.name}</h3>
                 <p>{new Date().toDateString()}</p>
               </div>
             </div>

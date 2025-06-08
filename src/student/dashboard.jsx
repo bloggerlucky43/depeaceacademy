@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Sidebar from "./sidebar"; // Assuming Sidebar is another component
 import Card from "./card";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
   // State to toggle sidebar visibility
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const navigate = useNavigate();
   const handleSideBar = (e) => {
     e.preventDefault();
     setSidebarVisible(!sidebarVisible); // Toggle sidebar visibility
   };
+
+  console.log(user);
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -25,6 +29,7 @@ const Dashboard = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -37,12 +42,22 @@ const Dashboard = () => {
     }
   };
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const userClass = userInfo?.class;
-  const term = userInfo?.term;
-  const identityNumber = userInfo?.identitynumber;
-  const currentSession = userInfo?.session;
-  const userName = userInfo?.name;
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+
+  const userClass = user.class;
+  const term = user.term;
+  const identityNumber = user.identitynumber;
+  const currentSession = user.session;
+  const userName = user.name;
 
   return (
     <>

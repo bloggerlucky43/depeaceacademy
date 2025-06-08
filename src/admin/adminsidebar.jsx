@@ -1,10 +1,11 @@
+import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 const AdminSideBar = () => {
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -17,6 +18,7 @@ const AdminSideBar = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -28,7 +30,6 @@ const AdminSideBar = () => {
       alert("An error occurred during logout");
     }
   };
-
   return (
     <div className="d-none d-sm-block d-flex flex-column p-3 text-white custom-nav align-items-center">
       <img

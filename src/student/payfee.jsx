@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Sidebar from "./sidebar";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthProvider";
 const bApp = import.meta.env.VITE_API_URL;
 const PayFee = () => {
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [amount, setAmount] = useState(5000);
@@ -17,9 +19,8 @@ const PayFee = () => {
     setSidebarVisible(!sidebarVisible); // Toggle sidebar visibility
   };
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  console.log(userInfo.id);
-  const userId = userInfo.id;
+  const userId = user.id;
+  console.log(userId);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,6 +94,7 @@ const PayFee = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -104,6 +106,17 @@ const PayFee = () => {
       alert("An error occurred during logout");
     }
   };
+
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
 
   return (
     <>
@@ -125,7 +138,7 @@ const PayFee = () => {
                 )}
               </button>
               <div className="d-flex flex-column ">
-                <h3 className="m-0">Welcome {userInfo?.name}</h3>
+                <h3 className="m-0">Welcome {user.name}</h3>
                 <p>{new Date().toDateString()}</p>
               </div>
             </div>
@@ -172,7 +185,7 @@ const PayFee = () => {
             <div className="card shadow  bg-shadow">
               <div className="card-header table-bg text-white">
                 <h4 className="mb-0 bg-card">
-                  Fee Payment- 2nd Term, 2024/2025
+                  Fee Payment- {user.term}, {user.session}
                 </h4>
               </div>
               <div className="card-body">

@@ -1,8 +1,11 @@
+import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../AuthProvider";
 
 const TeacherSidebar = () => {
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
   const handleLogout = async (e) => {
     e.preventDefault();
 
@@ -14,6 +17,7 @@ const TeacherSidebar = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {

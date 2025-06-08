@@ -1,54 +1,51 @@
-import { useEffect, createContext, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-
-const bApp = import.meta.env.VITE_API_URL;
+import { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("userInfo");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
-  const publicRoutes = ["/login", "/forgot-password", "/reset-password"];
+  const [pageloading, setPageLoading] = useState(true);
 
   useEffect(() => {
     const verifySession = async () => {
       try {
-        const res = await fetch(`${bApp}/api/auth/verify`, {
-          method: "GET",
-          credentials: "include",
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/auth/verify`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
 
         if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
+          // If token is valid, keep user from localStorage
+          const storedUser = localStorage.getItem("userInfo");
+          if (storedUser) {
+            setUser(JSON.parse(storedUser));
+          }
         } else {
+          // Invalid token
           setUser(null);
+          localStorage.removeItem("userInfo");
         }
       } catch (error) {
+        console.error("Auth verify error:", error);
         setUser(null);
+        localStorage.removeItem("userInfo");
       } finally {
-        setLoading(false);
+        setPageLoading(false);
       }
     };
 
     verifySession();
   }, []);
 
-  useEffect(() => {
-    if (
-      !loading &&
-      !user &&
-      !publicRoutes.some((route) => location.pathname.startsWith(route))
-    ) {
-      navigate("/login");
-    }
-  }, [loading, user, location.pathname, navigate]);
-
   return (
-    <AuthContext.Provider value={{ user, setUser, loading }}>
+    <AuthContext.Provider value={{ user, setUser, pageloading }}>
       {children}
     </AuthContext.Provider>
   );

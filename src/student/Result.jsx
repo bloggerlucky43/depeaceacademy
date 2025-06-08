@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "./sidebar";
 import jsPDF from "jspdf";
 import { autoTable } from "jspdf-autotable";
+import { AuthContext } from "../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 const Results = () => {
+  const { user, setUser, pageloading } = useContext(AuthContext);
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [results, setResults] = useState([]);
   const [selectedSession, setSelectedSession] = useState("2024/2025");
@@ -21,9 +23,7 @@ const Results = () => {
   const handleSessionChange = (e) => setSelectedSession(e.target.value);
   const handleTermChange = (e) => setSelectedTerm(e.target.value);
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  console.log(userInfo.id);
-  const userId = userInfo?.id;
+  const userId = user.id;
 
   const fetchData = async (e) => {
     e.preventDefault();
@@ -60,6 +60,7 @@ const Results = () => {
 
       if (response.ok) {
         alert("Logged out successfully");
+        setUser(null);
         localStorage.removeItem("userInfo");
         navigate("/login");
       } else {
@@ -157,6 +158,16 @@ const Results = () => {
       doc.save("result.pdf");
     };
   };
+  if (pageloading)
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
 
   return (
     <>
@@ -178,7 +189,7 @@ const Results = () => {
                 )}
               </button>
               <div className="d-flex flex-column ">
-                <h3 className="m-0">Welcome {userInfo?.name}</h3>
+                <h3 className="m-0">Welcome {user.name}</h3>
                 <p>{new Date().toDateString()}</p>
               </div>
             </div>
@@ -227,8 +238,7 @@ const Results = () => {
                 <div className="card shadow bg-shadow">
                   <div className="card-header bg-card text-white">
                     <h5 className="mb-0 text-center text-wrap">
-                      Academic Results - {userInfo?.term}, {userInfo?.session}{" "}
-                      Session
+                      Academic Results - {user.term}, {user.session} Session
                     </h5>
                   </div>
                   <div className="card-body">
@@ -325,9 +335,8 @@ const Results = () => {
                         <strong>Class Position:</strong> 3rd
                       </p>
                       <p>
-                        <strong>Teacher's General Remark:</strong>{" "}
-                        {userInfo?.name} has shown remarkable improvement this
-                        term. Keep it up!
+                        <strong>Teacher's General Remark:</strong> {user.name}{" "}
+                        has shown remarkable improvement this term. Keep it up!
                       </p>
                       <button
                         onClick={handleDownloadPDF}

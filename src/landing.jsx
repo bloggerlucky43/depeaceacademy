@@ -1,13 +1,9 @@
-        import { useContext } from "react";
-import { AuthProvider, AuthContext } from "./AuthProvider";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
-import ProtectedRoute from "./ProtectedRoute";
-
 import Login from "./component/login";
 import ForgetPassword from "./component/forgetpassword";
 import ResetPassword from "./component/resetpassword";
@@ -29,180 +25,41 @@ import ListOfResult from "./admin/academics/results";
 import PendingResult from "./admin/academics/pendingResult";
 import GenerateReceipt from "./admin/academics/generateReceipt";
 
-const AppRoutes = () => {
-  const { loading } = useContext(AuthContext);
-
-  if (loading) {
-    return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "100vh" }}>
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/forgot-password" element={<ForgetPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      
-
-      {/* Teacher Routes */}
-      <Route
-        path="/teacher/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={["teacher"]}>
-            <TeacherDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/teacher/results"
-        element={
-          <ProtectedRoute allowedRoles={["teacher"]}>
-            <TeacherResult />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/teacher/edit/results"
-        element={
-          <ProtectedRoute allowedRoles={["teacher"]}>
-            <EditResult />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Student Routes */}
-      <Route
-        path="/student/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={["student"]}>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/student/profile"
-        element={
-          <ProtectedRoute allowedRoles={["student"]}>
-            <Profile />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/student/results"
-        element={
-          <ProtectedRoute allowedRoles={["student"]}>
-            <Results />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/student/receipt"
-        element={
-          <ProtectedRoute allowedRoles={["student"]}>
-            <Fees />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/student/payment"
-        element={
-          <ProtectedRoute allowedRoles={["student"]}>
-            <PayFee />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Admin Routes */}
-      <Route
-        path="/admin_dashboard"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <AdminDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/teachers"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <TeacherManage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/users"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <ListofStudent />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/addNewTeacher"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <AddNewTeacher />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/addNewStudent"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <AddNewStudent />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/academics"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <Subjects />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/academics/results"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <ListOfResult />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/academics/pendingresults"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <PendingResult />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/academics/receipts"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <GenerateReceipt />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="*" element={<Navigate to="/login" />} />
-    </Routes>
-  );
-};
-
 const Landing = () => {
   return (
     <Router>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
+        <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+        <Route path="/teacher/results" element={<TeacherResult />} />
+        <Route path="/teacher/edit/results" element={<EditResult />} />
+
+        {/* Student Routes */}
+        <Route path="/student/dashboard" element={<Dashboard />} />
+        <Route path="/student/profile" element={<Profile />} />
+        <Route path="/student/results" element={<Results />} />
+        <Route path="/student/receipt" element={<Fees />} />
+        <Route path="/student/payment" element={<PayFee />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin_dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/teachers" element={<TeacherManage />} />
+        <Route path="/admin/users" element={<ListofStudent />} />
+        <Route path="/admin/addNewTeacher" element={<AddNewTeacher />} />
+        <Route path="/admin/addNewStudent" element={<AddNewStudent />} />
+        <Route path="/admin/academics" element={<Subjects />} />
+        <Route path="/admin/academics/results" element={<ListOfResult />} />
+
+        <Route
+          path="/admin/academics/pendingresults"
+          element={<PendingResult />}
+        />
+        <Route path="/admin/academics/receipts" element={<GenerateReceipt />} />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
     </Router>
   );
 };

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../AuthProvider";
 
 const bApp = import.meta.env.VITE_API_URL;
 console.log(bApp);
@@ -10,6 +11,20 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { user, setUser } = useContext(AuthContext); // use setUser from context
+
+  // useEffect(() => {
+  //   if (user) {
+  //     // Redirect based on role immediately
+  //     if (user.role === "student") {
+  //       navigate("/student/dashboard");
+  //     } else if (user.role === "teacher") {
+  //       navigate("/teacher/dashboard");
+  //     } else {
+  //       navigate("/admin_dashboard");
+  //     }
+  //   }
+  // }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,21 +46,25 @@ const Login = () => {
       });
 
       const data = await res.json();
-      const userInfo = data.user;
 
-      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+      console.log(data.user);
 
       if (res.ok) {
+        const userFromServer = data.user;
+
+        setUser(userFromServer);
+        localStorage.setItem("userInfo", JSON.stringify(userFromServer));
         setMessage("Login successful!");
         // Redirect or update app state
-        if (data.user.role === "student") {
+        if (userFromServer.role === "student") {
           navigate("/student/dashboard");
-        } else if (data.user.role === "teacher") {
+        } else if (userFromServer.role === "teacher") {
           navigate("/teacher/dashboard");
         } else {
           navigate("/admin_dashboard");
         }
-        console.log("Logged in user:", data.user);
+
+        console.log("Logged in user:", userFromServer);
       } else {
         setMessage(data.message || "Login failed");
       }
